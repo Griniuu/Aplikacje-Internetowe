@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TODO List - LAB 02</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+
+        <div class="header">
+            <h1>📋 TODO List</h1>
+            <p>Zarządzaj swoimi zadaniami efektywnie</p>
+        </div>
+
+        <div class="search-container">
+            <input 
+                type="text" 
+                id="searchInput" 
+                class="search-input" 
+                placeholder="🔍 Wyszukaj zadania (min. 2 znaki)..."
+            >
+        </div>
+
+        <div class="todo-list" id="todoList">
+            <div class="empty-state" id="emptyState">
+                <i>📝</i>
+                <h3>Brak zadań</h3>
+                <p>Dodaj swoje pierwsze zadanie poniżej!</p>
+            </div>
+        </div>
+
+        <div class="stats" id="stats">
+            Łącznie zadań: <span id="totalTasks">0</span>
+        </div>
+
+        <!-- Add Todo Form -->
+        <div class="add-todo">
+            <h3>➕ Dodaj nowe zadanie</h3>
+            <form id="addTodoForm">
+                <div class="form-group">
+                    <label for="todoTitle">Tytuł zadania:</label>
+                    <input 
+                        type="text" 
+                        id="todoTitle" 
+                        class="text-input" 
+                        placeholder="Wprowadź tytuł zadania (3-100 znaków)..."
+                        maxlength="100"
+                    >
+                    <div class="error-message" id="titleError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="todoDescription">Opis zadania (opcjonalnie):</label>
+                    <textarea 
+                        id="todoDescription" 
+                        class="text-input description-input" 
+                        placeholder="Szczegółowy opis zadania (max 500 znaków)..."
+                        maxlength="500"
+                        rows="3"
+                    ></textarea>
+                    <div class="error-message" id="descriptionError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="todoDate">Termin wykonania (opcjonalnie):</label>
+                    <input 
+                        type="datetime-local" 
+                        id="todoDate" 
+                        class="date-input"
+                    >
+                    <div class="error-message" id="dateError"></div>
+                </div>
+
+                <button type="submit" class="add-btn" id="addBtn">
+                    Dodaj zadanie
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
