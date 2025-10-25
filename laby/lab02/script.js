@@ -75,11 +75,12 @@ class TodoApp {
         }
     }
     
-    updateTodo(id, newTitle, newDescription = '') {
+    updateTodo(id, newTitle, newDescription = '', newDate = null) {
         const todo = this.todos.find(t => t.id === id);
         if (todo && this.validateTitle(newTitle)) {
             todo.title = newTitle.trim();
             todo.description = newDescription.trim();
+            todo.dueDate = newDate || null;
             this.saveToLocalStorage();
             this.render();
             console.log('📝 Zaktualizowano zadanie:', todo.title);
@@ -98,6 +99,7 @@ class TodoApp {
         const todoElement = document.querySelector(`[data-id="${id}"]`);
         const titleElement = todoElement.querySelector('.todo-title');
         const descriptionElement = todoElement.querySelector('.todo-description');
+        const dateElement = todoElement.querySelector('.todo-date');
         
         // Zamień tytuł na input
         const titleInput = document.createElement('input');
@@ -115,31 +117,61 @@ class TodoApp {
         descriptionInput.rows = 2;
         descriptionInput.setAttribute('data-field', 'description');
         
+        // Zamień datę na input datetime-local
+        const dateInput = document.createElement('input');
+        dateInput.type = 'datetime-local';
+        dateInput.value = todo.dueDate ? new Date(todo.dueDate).toISOString().slice(0, 16) : '';
+        dateInput.className = 'todo-date editing';
+        dateInput.setAttribute('data-field', 'date');
+        
         // Event listeners
-        const finishEdit = () => this.finishEditing();
         const cancelEdit = () => {
             this.currentEditingId = null;
             this.render();
         };
         
-        [titleInput, descriptionInput].forEach(input => {
-            input.addEventListener('blur', finishEdit);
+        // Event listenery dla wszystkich pól edycji
+        [titleInput, descriptionInput, dateInput].forEach(input => {
             input.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') cancelEdit();
-                if (e.key === 'Enter' && !e.shiftKey) {
+                if (e.key === 'Escape') {
+                    cancelEdit();
+                } else if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
-                    finishEdit();
+                    this.finishEditing();
                 }
+            });
+            
+            input.addEventListener('blur', (e) => {
+                // Sprawdź czy focus przechodzi do innego pola edycji tego samego zadania
+                setTimeout(() => {
+                    const newActiveElement = document.activeElement;
+                    const isStillEditingThisTask = newActiveElement && 
+                                                  newActiveElement.closest(`[data-id="${id}"]`) &&
+                                                  newActiveElement.classList.contains('editing');
+                    
+                    // Jeśli focus nie przeszedł do innego pola edycji tego zadania, zakończ edycję
+                    if (!isStillEditingThisTask) {
+                        this.finishEditing();
+                    }
+                }, 10);
             });
         });
         
         // Zamień elementy
         titleElement.replaceWith(titleInput);
+        
         if (descriptionElement) {
             descriptionElement.replaceWith(descriptionInput);
         } else {
             // Jeśli nie ma opisu, dodaj textarea po tytule
             titleInput.parentNode.insertBefore(descriptionInput, titleInput.nextSibling);
+        }
+        
+        if (dateElement) {
+            dateElement.replaceWith(dateInput);
+        } else {
+            // Jeśli nie ma daty, dodaj input po opisie
+            descriptionInput.parentNode.insertBefore(dateInput, descriptionInput.nextSibling);
         }
         
         titleInput.focus();
@@ -157,13 +189,15 @@ class TodoApp {
         
         const titleInput = todoElement.querySelector('.todo-title.editing');
         const descriptionInput = todoElement.querySelector('.todo-description.editing');
+        const dateInput = todoElement.querySelector('.todo-date.editing');
         
         if (titleInput) {
             const newTitle = titleInput.value.trim();
             const newDescription = descriptionInput ? descriptionInput.value.trim() : '';
+            const newDate = dateInput ? dateInput.value : null;
             
             if (newTitle && this.validateTitle(newTitle)) {
-                this.updateTodo(this.currentEditingId, newTitle, newDescription);
+                this.updateTodo(this.currentEditingId, newTitle, newDescription, newDate);
             } else {
                 this.render(); // Przywróć oryginalny tekst
             }
@@ -365,8 +399,8 @@ class TodoApp {
         div.innerHTML = `
             <div class="todo-content">
                 <div class="todo-title">${this.highlightSearchTerm(todo.title)}</div>
-                ${todo.description ? `<div class="todo-description">${this.highlightSearchTerm(todo.description)}</div>` : ''}
-                ${dateDisplay ? `<div class="todo-date ${isOverdue ? 'overdue' : ''}">${dateDisplay}</div>` : ''}
+                ${todo.description ? `<div class="todo-description">${this.highlightSearchTerm(todo.description)}</div>` : '<div class="todo-description" style="display: none;"></div>'}
+                ${dateDisplay ? `<div class="todo-date ${isOverdue ? 'overdue' : ''}">${dateDisplay}</div>` : '<div class="todo-date" style="color: #999; font-style: italic;">📅 Brak terminu</div>'}
             </div>
             <button class="delete-btn" onclick="todoApp.deleteTodo(${todo.id})">
                 🗑️ Usuń

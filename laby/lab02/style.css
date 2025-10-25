@@ -103,7 +103,7 @@ body {
     margin-bottom: 5px;
 }
 
-.todo-title.editing, .todo-description.editing {
+.todo-title.editing, .todo-description.editing, .todo-date.editing {
     background: #fff;
     border: 2px solid #4facfe;
     padding: 8px;
@@ -117,6 +117,11 @@ body {
 .todo-description.editing {
     min-height: 60px;
     resize: vertical;
+}
+
+.todo-date.editing {
+    font-size: 14px;
+    color: #333;
 }
 
 .todo-date {
