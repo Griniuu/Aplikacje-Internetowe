@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puzzle Mapowe - Lab 03</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+    <div class="container">
+        <h1>Puzzle Mapowe</h1>
+        
+        <!-- Status -->
+        <div id="status" class="status">Inicjalizacja aplikacji...</div>
+        
+        <!-- Panel kontrolny -->
+        <div class="control-panel">
+            <button id="getLocationBtn" class="btn" disabled>Moja lokalizacja</button>
+            <button id="randomLocationBtn" class="btn">Losowa lokalizacja</button>
+            <button id="downloadMapBtn" class="btn" disabled>Pobierz mapę</button>
+            <button id="generatePuzzleBtn" class="btn" disabled>Generuj puzzle</button>
+            <button id="solvePuzzleBtn" class="btn" disabled>Rozwiąż puzzle</button>
+        </div>
+
+        <!-- Kontener z mapą i puzzlem -->
+        <div class="game-container">
+            <!-- Mapa źródłowa -->
+            <div class="map-section">
+                <h3>🗺️ Mapa źródłowa</h3>
+                <div id="sourceMap" class="map"></div>
+                <div class="map-info">
+                    <span id="coordinates">Współrzędne: -</span>
+                </div>
+            </div>
+
+            <!-- Puzzle -->
+            <div class="puzzle-section">
+                <h3>🧩 Puzzle (4x4 = 16 elementów)</h3>
+                <div id="puzzleContainer" class="puzzle-container">
+                    <div class="puzzle-grid" id="puzzleGrid">
+                        <!-- Kafelki puzzle będą generowane dynamicznie -->
+                    </div>
+                </div>
+                <div class="puzzle-info">
+                    <span id="puzzleStatus">Status: Brak puzzle</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instrukcje -->
+        <div class="instructions">
+            <h3>Instrukcje:</h3>
+            <p>1. Aplikacja automatycznie poprosi o zgodę na lokalizację i powiadomienia</p>
+            <p>2. Wybierz lokalizację (swoją lub losową)</p>
+            <p>3. Wygeneruj puzzle z mapy</p>
+            <p>4. Przeciągaj kawałki aby ułożyć puzzle</p>
+            <p>5. Po ukończeniu otrzymasz powiadomienie</p>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="permissions.js"></script>
+    <script src="puzzle-map.js"></script>
+</body>
+</html>
