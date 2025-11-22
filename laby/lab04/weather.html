@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikacja Pogodowa - LAB D</title>
+    <link rel="stylesheet" href="weather.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌤️ Aplikacja Pogodowa</h1>
+            <p class="subtitle">Sprawdź pogodę w dowolnym mieście</p>
+        </header>
+
+        <div class="search-section">
+            <div class="input-group">
+                <input 
+                    type="text" 
+                    id="cityInput" 
+                    placeholder="Wpisz nazwę miasta (np. Warsaw, Krakow)"
+                    autocomplete="off">
+                <button id="weatherBtn" class="btn-primary">
+                    <span class="btn-icon">🔍</span>
+                    Pogoda
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading indicator -->
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Pobieranie danych...</p>
+        </div>
+
+        <!-- Error message -->
+        <div id="error" class="error-message hidden">
+            <span class="error-icon">⚠️</span>
+            <p id="errorText"></p>
+        </div>
+
+        <!-- Current weather section -->
+        <div id="currentWeather" class="weather-card hidden">
+            <h2>Aktualna Pogoda</h2>
+            <div class="current-weather-content">
+                <div class="weather-top">
+                    <div class="city-info">
+                        <h3 id="cityName">---</h3>
+                        <p id="weatherDescription">---</p>
+                    </div>
+                    <div class="weather-main">
+                        <div class="weather-icon" id="weatherIcon"></div>
+                        <div class="temperature">
+                            <span id="temperature" class="temp-value">--</span>
+                            <span class="temp-unit">°C</span>
+                        </div>
+                    </div>
+                    <div class="weather-stats">
+                        <div class="stat">
+                            <span class="stat-label">Odczuwalna:</span>
+                            <span id="feelsLike">--°C</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Wilgotność:</span>
+                            <span id="humidity">--%</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Ciśnienie:</span>
+                            <span id="pressure">-- hPa</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Wiatr:</span>
+                            <span id="wind">-- m/s</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5-day forecast section -->
+        <div id="forecast" class="weather-card hidden">
+            <h2>Prognoza 5-dniowa</h2>
+            <div id="forecastContent" class="forecast-grid">
+                <!-- Forecast items will be inserted here -->
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>Dane pobierane z <a href="https://openweathermap.org" target="_blank">OpenWeatherMap API</a></p>
+            <p class="tech-info">
+                <strong>Technologie:</strong> 
+                Current Weather (XMLHttpRequest) | 
+                5-day Forecast (Fetch API)
+            </p>
+        </footer>
+    </div>
+
+    <script src="weather.js"></script>
+</body>
+</html>
