@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Panel Administratora - Helpdesk{% endblock %}
+
+{% block content %}
+<div class="admin-page">
+    <h1>⚙️ Panel Administratora</h1>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>{{ stats.total_users }}</h3>
+            <p>Użytkownicy</p>
+        </div>
+        <div class="stat-card">
+            <h3>{{ stats.total_tickets }}</h3>
+            <p>Wszystkie tickety</p>
+        </div>
+        <div class="stat-card status-new">
+            <h3>{{ stats.new_tickets }}</h3>
+            <p>Nowe tickety</p>
+        </div>
+        <div class="stat-card status-progress">
+            <h3>{{ stats.in_progress_tickets }}</h3>
+            <p>W trakcie</p>
+        </div>
+        <div class="stat-card status-resolved">
+            <h3>{{ stats.resolved_tickets }}</h3>
+            <p>Rozwiązane</p>
+        </div>
+        <div class="stat-card priority-critical">
+            <h3>{{ stats.critical_tickets }}</h3>
+            <p>Krytyczne</p>
+        </div>
+    </div>
+    
+    <div class="admin-section">
+        <h2>Użytkownicy</h2>
+        <table class="users-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Imię i nazwisko</th>
+                    <th>Rola</th>
+                    <th>Data rejestracji</th>
+                    <th>Status</th>
+                    <th>Akcje</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.full_name }}</td>
+                    <td><span class="badge badge-role-{{ user.role }}">{{ user.role }}</span></td>
+                    <td>{{ user.created_at|datetime }}</td>
+                    <td>
+                        {% if user.is_active %}
+                            <span class="status-active">Aktywny</span>
+                        {% else %}
+                            <span class="status-inactive">Nieaktywny</span>
+                        {% endif %}
+                    </td>
+                    <td class="action-buttons">
+                        <a href="{{ url_for('edit_user', user_id=user.id) }}" class="btn-small btn-edit">✏️ Edytuj</a>
+                        {% if user.id != current_user.id %}
+                        <form method="POST" action="{{ url_for('delete_user', user_id=user.id) }}" style="display: inline;" onsubmit="return confirm('Czy na pewno chcesz usunąć użytkownika {{ user.email }}?');">
+                            <button type="submit" class="btn-small btn-delete">🗑️ Usuń</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

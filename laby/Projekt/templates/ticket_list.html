@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Lista Ticketów - Helpdesk{% endblock %}
+
+{% block content %}
+<div class="tickets-page">
+    <div class="page-header">
+        <h1>📋 Lista Ticketów</h1>
+        <a href="{{ url_for('ticket_create') }}" class="btn btn-primary btn-lg btn-shadow"><span style="font-size:1.2em;">➕</span> Nowy Ticket</a>
+    </div>
+    
+    <div class="filters">
+        <form method="GET" class="filter-form">
+            <select name="status" onchange="this.form.submit()">
+                <option value="">Wszystkie statusy</option>
+                <option value="new" {% if request.args.get('status') == 'new' %}selected{% endif %}>Nowy</option>
+                <option value="in_progress" {% if request.args.get('status') == 'in_progress' %}selected{% endif %}>W trakcie</option>
+                <option value="resolved" {% if request.args.get('status') == 'resolved' %}selected{% endif %}>Rozwiązany</option>
+                <option value="closed" {% if request.args.get('status') == 'closed' %}selected{% endif %}>Zamknięty</option>
+            </select>
+            
+            <select name="priority" onchange="this.form.submit()">
+                <option value="">Wszystkie priorytety</option>
+                <option value="low" {% if request.args.get('priority') == 'low' %}selected{% endif %}>Niski</option>
+                <option value="medium" {% if request.args.get('priority') == 'medium' %}selected{% endif %}>Średni</option>
+                <option value="high" {% if request.args.get('priority') == 'high' %}selected{% endif %}>Wysoki</option>
+                <option value="critical" {% if request.args.get('priority') == 'critical' %}selected{% endif %}>Krytyczny</option>
+            </select>
+            
+            <select name="category" onchange="this.form.submit()">
+                <option value="">Wszystkie kategorie</option>
+                <option value="hardware" {% if request.args.get('category') == 'hardware' %}selected{% endif %}>Sprzęt</option>
+                <option value="software" {% if request.args.get('category') == 'software' %}selected{% endif %}>Oprogramowanie</option>
+                <option value="network" {% if request.args.get('category') == 'network' %}selected{% endif %}>Sieć</option>
+                <option value="other" {% if request.args.get('category') == 'other' %}selected{% endif %}>Inne</option>
+            </select>
+            
+            <a href="{{ url_for('ticket_list') }}" class="btn btn-secondary">Wyczyść filtry</a>
+        </form>
+    </div>
+    
+    {% if tickets %}
+        <table class="tickets-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tytuł</th>
+                    <th>Kategoria</th>
+                    <th>Priorytet</th>
+                    <th>Status</th>
+                    <th>Utworzono</th>
+                    <th>Przypisany</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in tickets %}
+                <tr class="ticket-row priority-{{ ticket.priority }}">
+                    <td><strong>#{{ ticket.id }}</strong></td>
+                    <td><a href="{{ url_for('ticket_detail', ticket_id=ticket.id) }}">{{ ticket.title }}</a></td>
+                    <td>{{ ticket.category_label }}</td>
+                    <td><span class="badge badge-{{ ticket.priority }}">{{ ticket.priority_label }}</span></td>
+                    <td><span class="status-badge status-{{ ticket.status }}">{{ ticket.status_label }}</span></td>
+                    <td>{{ ticket.created_at|datetime }}</td>
+                    <td>
+                        {% if ticket.assigned_technician %}
+                            {{ ticket.assigned_technician.full_name }}
+                        {% else %}
+                            <span class="text-muted">Nieprzypisany</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="empty-state">Brak ticketów spełniających kryteria.</p>
+    {% endif %}
+</div>
+{% endblock %}

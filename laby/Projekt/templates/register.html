@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Rejestracja - Helpdesk{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-box">
+        <h1>📝 Rejestracja</h1>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            
+            <div class="form-group">
+                {{ form.email.label }}
+                {{ form.email(class="form-control", placeholder="twoj@email.pl") }}
+                {% if form.email.errors %}
+                    <span class="error">{{ form.email.errors[0] }}</span>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.full_name.label }}
+                {{ form.full_name(class="form-control", placeholder="Jan Kowalski") }}
+                {% if form.full_name.errors %}
+                    <span class="error">{{ form.full_name.errors[0] }}</span>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.role.label }}
+                {{ form.role(class="form-control") }}
+            </div>
+            
+            <div class="form-group">
+                {{ form.password.label }}
+                {{ form.password(class="form-control", placeholder="Minimum 8 znaków") }}
+                {% if form.password.errors %}
+                    <span class="error">{{ form.password.errors[0] }}</span>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.password2.label }}
+                {{ form.password2(class="form-control", placeholder="Powtórz hasło") }}
+                {% if form.password2.errors %}
+                    <span class="error">{{ form.password2.errors[0] }}</span>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary btn-block") }}
+            </div>
+        </form>
+        
+        <div class="auth-footer">
+            <p>Masz już konto? <a href="{{ url_for('login') }}">Zaloguj się</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

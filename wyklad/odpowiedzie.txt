@@ -1,0 +1,29 @@
+1. Google search - (2), (3)
+2. Listy wypunktowane - ul,li
+3.Zdjęcia w html - <img>
+4. przezroczystość na 25% - opacity 0.75
+5.wartość zmiennej i : let a = false = 1
+6. "Artur" < "Zorro" - true
+7.wartość let a = "5" - 51
+8. liczba znaków - "abc".length
+9.Hello world -1,4 - + '' +,'$
+10. zmienna $a - string
+11. komentarz php - //,#,/*
+12. error_reporting- display_error = off
+13. redy for shipment - ind. 3 ostatni
+14. $c - wart. 3 add 1 raz
+15. switch - 111x
+16. plik lib.php - require_once()
+17.ciasteczka - setcookie()
+18. session_destroy() - wylogowany, do końca sesji
+19. fwrit- file_put - identyfikator nazwach pliku
+20. typescript podzbbiur JS
+21. wszystkie od 1-6
+22. diagram - Abstract
+23. wzorzec projektowy - strategia
+24. słów kluczowych - lepiej dopasować treść
+25. metoda http całości - PUT
+26. -||- fragmentu - PATCH
+27. konf Cordova - config.xml
+28. w jakim jezyku Cordova - JS
+29. 

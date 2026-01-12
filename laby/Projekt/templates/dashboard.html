@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Helpdesk{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h1>📊 Dashboard</h1>
+    
+    <div class="stats-grid">
+        {% if current_user.role == 'user' %}
+            <div class="stat-card">
+                <h3>{{ stats.total }}</h3>
+                <p>Wszystkie tickety</p>
+            </div>
+            <div class="stat-card status-new">
+                <h3>{{ stats.new }}</h3>
+                <p>Nowe</p>
+            </div>
+            <div class="stat-card status-progress">
+                <h3>{{ stats.in_progress }}</h3>
+                <p>W trakcie</p>
+            </div>
+            <div class="stat-card status-resolved">
+                <h3>{{ stats.resolved }}</h3>
+                <p>Rozwiązane</p>
+            </div>
+        {% else %}
+            <div class="stat-card">
+                <h3>{{ stats.total }}</h3>
+                <p>Wszystkie tickety</p>
+            </div>
+            <div class="stat-card status-new">
+                <h3>{{ stats.new }}</h3>
+                <p>Nowe</p>
+            </div>
+            <div class="stat-card status-progress">
+                <h3>{{ stats.in_progress }}</h3>
+                <p>W trakcie</p>
+            </div>
+            <div class="stat-card priority-critical">
+                <h3>{{ stats.critical }}</h3>
+                <p>Krytyczne</p>
+            </div>
+            {% if current_user.role == 'technician' %}
+            <div class="stat-card">
+                <h3>{{ stats.assigned }}</h3>
+                <p>Przypisane do mnie</p>
+            </div>
+            {% endif %}
+        {% endif %}
+    </div>
+    
+    <div class="recent-tickets">
+        <h2>Ostatnie tickety</h2>
+        {% if tickets %}
+            <div class="ticket-grid">
+                {% for ticket in tickets %}
+                <div class="ticket-card priority-{{ ticket.priority }} status-{{ ticket.status }}">
+                    <div class="ticket-header">
+                        <h3><a href="{{ url_for('ticket_detail', ticket_id=ticket.id) }}">#{{ ticket.id }} {{ ticket.title }}</a></h3>
+                        <span class="badge badge-{{ ticket.priority }}">{{ ticket.priority_label }}</span>
+                    </div>
+                    <p class="ticket-meta">
+                        {{ ticket.category_label }} | 
+                        <span class="status-badge status-{{ ticket.status }}">{{ ticket.status_label }}</span>
+                    </p>
+                    <p class="ticket-date">Utworzono: {{ ticket.created_at|datetime }}</p>
+                    {% if ticket.assigned_technician %}
+                        <p class="ticket-assigned">Przypisany: {{ ticket.assigned_technician.full_name }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-state">Brak ticketów do wyświetlenia.</p>
+        {% endif %}
+        
+        <div class="dashboard-actions">
+            <a href="{{ url_for('ticket_list') }}" class="btn btn-secondary">Zobacz wszystkie tickety</a>
+            <a href="{{ url_for('ticket_create') }}" class="btn btn-primary">+ Nowy Ticket</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

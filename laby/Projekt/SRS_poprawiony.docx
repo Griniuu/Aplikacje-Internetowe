@@ -1,0 +1,152 @@
+Specyfikacja Wymagań Oprogramowania (SRS)
+Wersja: 1.0.0
+Data: 2025-12-21
+Autor: Zespół projektowy
+
+Spis treści
+1. Wprowadzenie
+1.1 Cel
+1.2 Przyjęte konwencje
+1.3 Zakres projektu
+1.4 Odwołania
+2. Opis ogólny
+2.1 Perspektywa produktu
+2.2 Klasy i charakterystyki użytkowników
+2.3 Środowisko działania
+2.4 Ograniczenia projektowe i wykonawcze
+2.5 Założenia i zależności
+3. Funkcjonalności systemu
+3.1 Zarządzanie zgłoszeniami
+4. Wymagania dotyczące danych
+4.1 Logiczny model danych
+4.2 Raporty
+4.3 Pozyskiwanie, integralność, przechowywanie i usuwanie danych
+5. Wymagania dotyczące interfejsu zewnętrznego
+5.1 Interfejsy użytkownika
+5.2 Interfejsy programowe
+5.3 Interfejsy sprzętowe
+5.4 Interfejsy komunikacyjne
+6. Cechy jakości
+6.1 Użyteczność
+6.2 Wydajność
+6.3 Zabezpieczenia
+6.4 Bezpieczeństwo użytkowania
+7. Wymagania internacjonalizacji i lokalizacji
+8. Inne wymagania
+Suplement A: Słownictwo
+Suplement B: Modele analityczne
+
+1. Wprowadzenie
+Niniejszy dokument stanowi Specyfikację Wymagań Oprogramowania (SRS) dla systemu Zarządzania Zgłoszeniami (Helpdesk). Dokument opisuje funkcjonalności, ograniczenia oraz wymagania niefunkcjonalne systemu.
+
+1.1 Cel
+Celem jest stworzenie webowego systemu do obsługi zgłoszeń, usprawniającego komunikację między użytkownikami a zespołem wsparcia technicznego.
+
+1.2 Przyjęte konwencje
+- Dokument zgodny z normami SRS.
+- Wymagania funkcjonalne opisane jako "system musi".
+- Każde wymaganie posiada unikalny identyfikator.
+
+1.3 Zakres projektu
+System umożliwia zgłaszanie problemów, zarządzanie zgłoszeniami, komunikację oraz generowanie statystyk. Obsługuje role: użytkownik, technik, administrator.
+
+1.4 Odwołania
+- Dokumentacja Flask, Flask-SQLAlchemy, Flask-Login, Flask-WTF
+- Kod źródłowy projektu
+
+2. Opis ogólny
+System jest aplikacją webową opartą na Pythonie (Flask). Działa lokalnie lub na serwerze, korzysta z bazy SQLite lub PostgreSQL.
+
+2.1 Perspektywa produktu
+System jest nowym produktem, nie integruje się obecnie z zewnętrznymi systemami (np. SMTP, OAuth). Możliwa przyszła rozbudowa.
+
+2.2 Klasy i charakterystyki użytkowników
+- Użytkownik: zgłasza problemy, śledzi status, dodaje komentarze.
+- Technik: zarządza zgłoszeniami, zmienia statusy, przypisuje zgłoszenia, dodaje notatki wewnętrzne.
+- Administrator: zarządza użytkownikami, ma dostęp do statystyk i panelu admina.
+
+2.3 Środowisko działania
+- System operacyjny: dowolny z Pythonem 3.10+
+- Przeglądarka: Chrome, Firefox, Edge, Safari
+- Baza danych: SQLite (domyślnie), opcjonalnie PostgreSQL
+
+2.4 Ograniczenia projektowe i wykonawcze
+- Framework: Flask
+- Brak mikroserwisów, aplikacja monolityczna
+- Brak automatycznych powiadomień e-mail
+
+2.5 Założenia i zależności
+- Użytkownicy mają dostęp do nowoczesnej przeglądarki
+- System wymaga środowiska Python 3.10+
+
+3. Funkcjonalności systemu
+3.1 Zarządzanie zgłoszeniami
+- Rejestracja i logowanie użytkowników
+- Tworzenie, przeglądanie, edycja i komentowanie ticketów
+- Przypisywanie ticketów technikom (ręcznie)
+- Zmiana statusów ticketów (new, in_progress, resolved, closed)
+- Notatki wewnętrzne (dla techników/adminów)
+- Panel administracyjny do zarządzania użytkownikami
+- Dashboardy dla użytkowników, techników i adminów
+
+4. Wymagania dotyczące danych
+4.1 Logiczny model danych
+- User: id, email, password_hash, full_name, role (user/technician/admin), created_at, is_active
+- Ticket: id, title, description, category (hardware/software/network/other), priority (low/medium/high/critical), status, location, created_by, assigned_to, created_at, updated_at, resolved_at
+- Comment: id, content, created_at, author_id, ticket_id, is_internal
+
+4.2 Raporty
+- Statystyki zgłoszeń (otwarte, zamknięte, w toku, wg kategorii i statusu)
+- Wydajność techników (czas reakcji, czas rozwiązania)
+
+4.3 Pozyskiwanie, integralność, przechowywanie i usuwanie danych
+- Dane przechowywane w relacyjnej bazie danych
+- Hasła szyfrowane
+- Dane pozyskiwane przez formularze webowe
+- Usuwanie/anonymizacja danych wg polityki retencji
+
+5. Wymagania dotyczące interfejsu zewnętrznego
+5.1 Interfejsy użytkownika
+- Interfejs webowy (HTML, Jinja2, CSS)
+- Responsywność zależna od użytego CSS
+- Komunikaty walidacyjne w języku polskim
+
+5.2 Interfejsy programowe
+- Brak publicznego REST API
+- Całość obsługiwana przez interfejs webowy
+
+5.3 Interfejsy sprzętowe
+- Brak
+
+5.4 Interfejsy komunikacyjne
+- Komunikacja przez HTTP (HTTPS wymaga dodatkowej konfiguracji)
+- Brak powiadomień e-mail
+
+6. Cechy jakości
+6.1 Użyteczność
+- Intuicyjny interfejs, prosty proces zgłaszania i obsługi ticketów
+
+6.2 Wydajność
+- Obsługa wielu użytkowników jednocześnie (ograniczona przez środowisko uruchomieniowe)
+
+6.3 Zabezpieczenia
+- Szyfrowanie haseł
+- Ograniczenie dostępu do panelu admina
+
+6.4 Bezpieczeństwo użytkowania
+- Brak funkcji mogących powodować szkody
+
+7. Wymagania internacjonalizacji i lokalizacji
+- Interfejs w języku polskim
+- Brak obsługi wielu języków
+
+8. Inne wymagania
+- Możliwość rozbudowy o powiadomienia e-mail, REST API, integracje zewnętrzne
+
+Suplement A: Słownictwo
+- Ticket – zgłoszenie
+- Technik – pracownik obsługujący zgłoszenia
+- Admin – administrator systemu
+
+Suplement B: Modele analityczne
+- Diagram ERD dostępny w repozytorium projektu

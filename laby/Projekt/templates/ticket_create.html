@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Nowy Ticket - Helpdesk{% endblock %}
+
+{% block content %}
+<div class="ticket-form-page">
+    <h1>📝 Zgłoś Nowy Problem</h1>
+    
+    <form method="POST" class="ticket-form">
+        {{ form.hidden_tag() }}
+        
+        <div class="form-row">
+            <div class="form-group">
+                {{ form.title.label }}
+                {{ form.title(class="form-control", placeholder="Np. Brak internetu w pokoju 301") }}
+                {% if form.title.errors %}
+                    <span class="error">{{ form.title.errors[0] }}</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                {{ form.category.label }}
+                {{ form.category(class="form-control") }}
+                {% if form.category.errors %}
+                    <span class="error">{{ form.category.errors[0] }}</span>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.priority.label }}
+                {{ form.priority(class="form-control") }}
+                {% if form.priority.errors %}
+                    <span class="error">{{ form.priority.errors[0] }}</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                {{ form.location.label }}
+                {{ form.location(class="form-control", placeholder="Np. Budynek A, pokój 301") }}
+                {% if form.location.errors %}
+                    <span class="error">{{ form.location.errors[0] }}</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                {{ form.description.label }}
+                {{ form.description(class="form-control", rows=6, placeholder="Opisz szczegółowo problem...") }}
+                {% if form.description.errors %}
+                    <span class="error">{{ form.description.errors[0] }}</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="form-actions">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Anuluj</a>
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+</div>
+{% endblock %}

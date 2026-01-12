@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Ticket #{{ ticket.id }} - Helpdesk{% endblock %}
+
+{% block content %}
+<div class="ticket-detail">
+    <div class="ticket-header-detail">
+        <div>
+            <h1>Ticket #{{ ticket.id }}: {{ ticket.title }}</h1>
+            <p class="ticket-meta">
+                Utworzono: {{ ticket.created_at|datetime }} przez {{ ticket.author.full_name }}
+                {% if ticket.updated_at != ticket.created_at %}
+                    | Aktualizacja: {{ ticket.updated_at|datetime }}
+                {% endif %}
+            </p>
+        </div>
+        <div class="ticket-badges">
+            <span class="badge badge-{{ ticket.priority }}">{{ ticket.priority_label }}</span>
+            <span class="status-badge status-{{ ticket.status }}">{{ ticket.status_label }}</span>
+        </div>
+    </div>
+    
+    <div class="ticket-content">
+        <div class="ticket-main">
+            <div class="ticket-info-box">
+                <h3>Szczegóły</h3>
+                <table class="info-table">
+                    <tr>
+                        <td><strong>Kategoria:</strong></td>
+                        <td>{{ ticket.category_label }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Priorytet:</strong></td>
+                        <td><span class="badge badge-{{ ticket.priority }}">{{ ticket.priority_label }}</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Status:</strong></td>
+                        <td><span class="status-badge status-{{ ticket.status }}">{{ ticket.status_label }}</span></td>
+                    </tr>
+                    {% if ticket.location %}
+                    <tr>
+                        <td><strong>Lokalizacja:</strong></td>
+                        <td>{{ ticket.location }}</td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td><strong>Przypisany:</strong></td>
+                        <td>
+                            {% if ticket.assigned_technician %}
+                                {{ ticket.assigned_technician.full_name }}
+                            {% else %}
+                                <span class="text-muted">Nieprzypisany</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% if ticket.resolved_at %}
+                    <tr>
+                        <td><strong>Rozwiązano:</strong></td>
+                        <td>{{ ticket.resolved_at|datetime }}</td>
+                    </tr>
+                    {% endif %}
+                </table>
+            </div>
+            
+            <div class="ticket-description">
+                <h3>Opis problemu</h3>
+                <p>{{ ticket.description }}</p>
+            </div>
+            
+            <div class="ticket-comments">
+                <h3>💬 Komentarze ({{ comments|length }})</h3>
+                
+                {% for comment in comments %}
+                    {% if not comment.is_internal or current_user.role in ['technician', 'admin'] %}
+                    <div class="comment {% if comment.is_internal %}comment-internal{% endif %}">
+                        <div class="comment-header">
+                            <strong>{{ comment.author.full_name }}</strong>
+                            <span class="comment-date">{{ comment.created_at|datetime }}</span>
+                            {% if comment.is_internal %}
+                                <span class="badge badge-internal">Wewnętrzne</span>
+                            {% endif %}
+                        </div>
+                        <p>{{ comment.content }}</p>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+                
+                <form method="POST" action="{{ url_for('add_comment', ticket_id=ticket.id) }}" class="comment-form">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ form.content(class="form-control", rows=3, placeholder="Dodaj komentarz...") }}
+                    </div>
+                    {% if current_user.role in ['technician', 'admin'] %}
+                    <div class="form-group">
+                        {{ form.is_internal() }} {{ form.is_internal.label }}
+                    </div>
+                    {% endif %}
+                    {{ form.submit(class="btn btn-primary") }}
+                </form>
+            </div>
+        </div>
+        
+        {% if current_user.role in ['technician', 'admin'] %}
+        <div class="ticket-actions">
+            <div class="action-box">
+                <h3>Akcje</h3>
+                
+                <form method="POST" action="{{ url_for('change_status', ticket_id=ticket.id) }}" class="action-form">
+                    <label>Zmień status:</label>
+                    <select name="status" class="form-control">
+                        <option value="new" {% if ticket.status == 'new' %}selected{% endif %}>Nowy</option>
+                        <option value="in_progress" {% if ticket.status == 'in_progress' %}selected{% endif %}>W trakcie</option>
+                        <option value="resolved" {% if ticket.status == 'resolved' %}selected{% endif %}>Rozwiązany</option>
+                        <option value="closed" {% if ticket.status == 'closed' %}selected{% endif %}>Zamknięty</option>
+                    </select>
+                    <button type="submit" class="btn btn-secondary btn-block">Zmień status</button>
+                </form>
+                
+                <form method="POST" action="{{ url_for('assign_ticket', ticket_id=ticket.id) }}" class="action-form">
+                    <label>Przypisz do:</label>
+                    <select name="technician_id" class="form-control">
+                        <option value="me">Przypisz do mnie</option>
+                        {% for tech in technicians %}
+                            <option value="{{ tech.id }}" {% if ticket.assigned_to == tech.id %}selected{% endif %}>
+                                {{ tech.full_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn btn-secondary btn-block">Przypisz</button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="back-link">
+        <a href="{{ url_for('ticket_list') }}">&larr; Powrót do listy</a>
+    </div>
+</div>
+{% endblock %}

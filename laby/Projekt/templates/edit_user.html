@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Edytuj Użytkownika - Helpdesk{% endblock %}
+
+{% block content %}
+<div class="ticket-form-page">
+    <h1>✏️ Edytuj Użytkownika</h1>
+    
+    <form method="POST" class="ticket-form">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="full_name">Imię i nazwisko:</label>
+                <input type="text" id="full_name" name="full_name" class="form-control" value="{{ user.full_name }}" required>
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" class="form-control" value="{{ user.email }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="role">Rola:</label>
+                <select id="role" name="role" class="form-control" required>
+                    <option value="user" {% if user.role == 'user' %}selected{% endif %}>Użytkownik</option>
+                    <option value="technician" {% if user.role == 'technician' %}selected{% endif %}>Technik</option>
+                    <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Administrator</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="new_password">Nowe hasło (pozostaw puste, aby nie zmieniać):</label>
+                <input type="password" id="new_password" name="new_password" class="form-control" placeholder="Minimum 8 znaków">
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" name="is_active" {% if user.is_active %}checked{% endif %}>
+                    Konto aktywne
+                </label>
+            </div>
+        </div>
+        
+        <div class="user-info-box">
+            <p><strong>ID użytkownika:</strong> {{ user.id }}</p>
+            <p><strong>Data rejestracji:</strong> {{ user.created_at|datetime }}</p>
+            <p><strong>Liczba utworzonych ticketów:</strong> {{ user.created_tickets.count() }}</p>
+            {% if user.role in ['technician', 'admin'] %}
+                <p><strong>Liczba przypisanych ticketów:</strong> {{ user.assigned_tickets.count() }}</p>
+            {% endif %}
+        </div>
+        
+        <div class="form-actions">
+            <a href="{{ url_for('admin_panel') }}" class="btn btn-secondary">Anuluj</a>
+            <button type="submit" class="btn btn-primary">💾 Zapisz zmiany</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
